@@ -44,7 +44,7 @@ import requests
 
 FORECAST_API = "https://api.open-meteo.com/v1/forecast"
 MARINE_API   = "https://marine-api.open-meteo.com/v1/marine"
-SMHI_OBS_API = "https://opendata-download-metobs.smhi.se/api/version/latest"
+SMHI_OBS_API = "https://opendata-download-metobs.smhi.se/api/version/1.0"
 
 OUT_DIR      = os.path.join("api", "weather")
 
@@ -326,7 +326,7 @@ def fetch_smhi_observations() -> dict[str, Any]:
     stations_out = []
 
     for var_name, param_id in SMHI_PARAMS.items():
-        url = f"{SMHI_OBS_API}/parameter/{param_id}/station-set/all/period/latest-day/data.json"
+        url = f"{SMHI_OBS_API}/parameter/{param_id}/station-set/all/period/latest-hour/data.json"
         data = get_json(url, {})
         if data is None:
             print(f"    SMHI {var_name} fetch failed")
@@ -408,27 +408,32 @@ def main():
 
     os.makedirs(OUT_DIR, exist_ok=True)
 
-    # ---- Wind grid ----------------------------------------------------------
-    print("\n[1/4] Building wind grid…")
     wind_grid = build_grid(LAT_MIN, LAT_MAX, LON_MIN, LON_MAX, WIND_STEP)
-    print(f"  {len(wind_grid)} points at {WIND_STEP}°")
-    wind_data = fetch_wind_grid(wind_grid)
+    wave_grid = build_grid(LAT_MIN, LAT_MAX, LON_MIN, LON_MAX, WAVE_STEP)
+
+    print(f"\nFetching all sources in parallel…")
+    print(f"  Wind: {len(wind_grid)} points — Wave: {len(wave_grid)} points — SMHI observations")
+
+    with ThreadPoolExecutor(max_workers=3) as pool:
+        f_wind = pool.submit(fetch_wind_grid, wind_grid)
+        f_wave = pool.submit(fetch_wave_grid, wave_grid)
+        f_obs  = pool.submit(fetch_smhi_observations)
+        wind_data = f_wind.result()
+        wave_data = f_wave.result()
+        obs_data  = f_obs.result()
+
+    # ---- Write outputs ------------------------------------------------------
+    print("\n[1/4] Saving wind…")
     with open(os.path.join(OUT_DIR, "wind.json"), "w") as f:
         json.dump(wind_data, f, separators=(",", ":"))
     print(f"  Saved {len(wind_data['points'])} wind points")
 
-    # ---- Wave grid ----------------------------------------------------------
-    print("\n[2/4] Building wave grid…")
-    wave_grid = build_grid(LAT_MIN, LAT_MAX, LON_MIN, LON_MAX, WAVE_STEP)
-    print(f"  {len(wave_grid)} points at {WAVE_STEP}°")
-    wave_data = fetch_wave_grid(wave_grid)
+    print("\n[2/4] Saving waves…")
     with open(os.path.join(OUT_DIR, "waves.json"), "w") as f:
         json.dump(wave_data, f, separators=(",", ":"))
     print(f"  Saved {len(wave_data['points'])} sea wave points")
 
-    # ---- SMHI observations --------------------------------------------------
-    print("\n[3/4] Fetching SMHI coastal observations…")
-    obs_data = fetch_smhi_observations()
+    print("\n[3/4] Saving SMHI observations…")
     with open(os.path.join(OUT_DIR, "observations.json"), "w") as f:
         json.dump(obs_data, f, separators=(",", ":"))
     print(f"  Saved {len(obs_data['stations'])} station observations")
