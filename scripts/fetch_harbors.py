@@ -170,6 +170,9 @@ def fetch_osm():
             if tags.get(mk):
                 mooring_parts.append(f"{mk}={tags[mk]}")
 
+        description = _coalesce(tags, "description", "description:sv",
+                                "description:en")
+
         rec = {
             "source":     "osm",
             "source_id":  f"{el['type']}/{el['id']}",
@@ -178,6 +181,8 @@ def fetch_osm():
             "name":       name,
             "type":       classify(name, tags, "osm"),
         }
+        if description:
+            rec["description"] = description
 
         # Services
         svc = {}
@@ -193,9 +198,12 @@ def fetch_osm():
         nav = {}
         for k, sk in (("depth", "depth"), ("maxdepth", "max_depth"),
                       ("maxlength", "max_length"), ("maxdraught", "max_draught"),
-                      ("max_stay", "max_stay")):
+                      ("maxwidth", "max_width"), ("max_stay", "max_stay")):
             if tags.get(k):
                 nav[sk] = tags[k]
+        cap = tags.get("capacity:boats") or tags.get("capacity")
+        if cap:
+            nav["capacity"] = cap
         if mooring_parts:
             nav["mooring_type"] = "; ".join(mooring_parts)
         if nav:
@@ -213,7 +221,9 @@ def fetch_osm():
         con = {}
         for k, sk in (("website", "website"), ("contact:website", "website"),
                       ("phone", "phone"), ("contact:phone", "phone"),
-                      ("operator", "operator")):
+                      ("operator", "operator"), ("wikipedia", "wikipedia"),
+                      ("wikidata", "wikidata"),
+                      ("addr:city", "city"), ("addr:postcode", "postcode")):
             if tags.get(k) and sk not in con:
                 con[sk] = tags[k]
         if con:
