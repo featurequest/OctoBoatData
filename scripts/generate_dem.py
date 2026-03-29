@@ -36,6 +36,7 @@ import math
 import os
 import sys
 import time
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 import numpy as np
 import requests
@@ -65,6 +66,7 @@ MIN_LAND_ELEVATION_M = 1.0
 RETRY_DELAY   = 5
 MAX_RETRIES   = 4
 REQUEST_PAUSE = 0.05   # 50 ms between tile downloads (be polite to S3)
+DEM_WORKERS   = 20     # concurrent S3 downloads (S3 has no meaningful rate limit)
 
 
 # ---------------------------------------------------------------------------
@@ -143,79 +145,69 @@ def download_tile(x: int, y: int, zoom: int) -> np.ndarray | None:
 # Build Sweden elevation mosaic
 # ---------------------------------------------------------------------------
 
-def build_mosaic(zoom: int) -> dict:
+def build_mosaic(zoom: int) -> tuple[dict, int, int]:
     """
-    Download all Terrarium tiles covering the Sweden bbox and return a dict
-    mapping (x, y) → numpy elevation array (256×256 float32).
+    Download all Terrarium tiles covering the Sweden bbox and return
+    (tiles, x_min, y_min) where tiles maps (x, y) → 256×256 float32 array.
     """
     x_min, y_min = deg_to_tile(LAT_MAX, LON_MIN, zoom)   # NW corner
     x_max, y_max = deg_to_tile(LAT_MIN, LON_MAX, zoom)   # SE corner
 
-    total = (x_max - x_min + 1) * (y_max - y_min + 1)
+    coords = [(x, y)
+              for x in range(x_min, x_max + 1)
+              for y in range(y_min, y_max + 1)]
+    total = len(coords)
     print(f"  Fetching {total} tiles at zoom {zoom} "
-          f"(x {x_min}–{x_max}, y {y_min}–{y_max})")
+          f"(x {x_min}–{x_max}, y {y_min}–{y_max}, {DEM_WORKERS} workers)…")
 
-    tiles = {}
-    count = 0
-    for x in range(x_min, x_max + 1):
-        for y in range(y_min, y_max + 1):
-            count += 1
-            if count % 50 == 0:
-                print(f"    {count}/{total} tiles downloaded…")
-            data = download_tile(x, y, zoom)
+    tiles: dict = {}
+    done = 0
+    with ThreadPoolExecutor(max_workers=DEM_WORKERS) as pool:
+        futures = {pool.submit(download_tile, x, y, zoom): (x, y)
+                   for x, y in coords}
+        for future in as_completed(futures):
+            x, y = futures[future]
+            data = future.result()
+            done += 1
             if data is not None:
                 tiles[(x, y)] = data
+            if done % 100 == 0 or done == total:
+                print(f"    [{done}/{total}] {done * 100 // total}% downloaded")
 
     print(f"  Downloaded {len(tiles)}/{total} tiles successfully")
-    return tiles
-
-
-def sample_elevation(tiles: dict, zoom: int,
-                     lat: float, lon: float) -> float:
-    """
-    Bilinear interpolation of elevation at (lat, lon) from the tile mosaic.
-    Returns 0.0 if outside coverage.
-    """
-    n = 2 ** zoom
-    # Fractional tile position
-    fx = (lon + 180.0) / 360.0 * n
-    lat_r = math.radians(lat)
-    fy = (1.0 - math.log(math.tan(lat_r) + 1.0 / math.cos(lat_r)) / math.pi) / 2.0 * n
-
-    tx, ty = int(fx), int(fy)
-    px = (fx - tx) * 256
-    py = (fy - ty) * 256
-
-    arr = tiles.get((tx, ty))
-    if arr is None:
-        return 0.0
-
-    # Pixel indices (clamp to tile boundary)
-    i0 = min(int(py), 255)
-    j0 = min(int(px), 255)
-    i1 = min(i0 + 1, 255)
-    j1 = min(j0 + 1, 255)
-
-    fi = py - int(py)
-    fj = px - int(px)
-
-    e = (arr[i0, j0] * (1 - fi) * (1 - fj)
-         + arr[i1, j0] * fi      * (1 - fj)
-         + arr[i0, j1] * (1 - fi) * fj
-         + arr[i1, j1] * fi      * fj)
-    return float(e)
+    return tiles, x_min, y_min
 
 
 # ---------------------------------------------------------------------------
-# Generate 1°×1° output tiles
+# Generate 1°×1° output tiles (vectorised)
 # ---------------------------------------------------------------------------
 
-def generate_output_tiles(tiles: dict, zoom: int) -> list[dict]:
+def _build_mosaic_array(tiles: dict, x_min: int, y_min: int,
+                        x_count: int, y_count: int) -> np.ndarray:
+    """Stitch downloaded tiles into one elevation array (float32)."""
+    mosaic = np.zeros((y_count * 256, x_count * 256), dtype=np.float32)
+    for (x, y), arr in tiles.items():
+        r0 = (y - y_min) * 256
+        c0 = (x - x_min) * 256
+        mosaic[r0:r0 + 256, c0:c0 + 256] = arr
+    return mosaic
+
+
+def generate_output_tiles(tiles: dict, zoom: int,
+                          x_min: int, y_min: int) -> list[dict]:
     """
     For each 1°×1° cell covering Sweden, sample the mosaic onto a
     regular DLAT×DLON grid and save a JSON tile.
     Returns list of tile metadata dicts for the index.
+    Sampling is fully vectorised with numpy (no per-point Python loop).
     """
+    x_max = max(x for x, _ in tiles)
+    y_max = max(y for _, y in tiles)
+    mosaic = _build_mosaic_array(tiles, x_min, y_min,
+                                 x_max - x_min + 1, y_max - y_min + 1)
+    h, w = mosaic.shape
+    n = 2 ** zoom
+
     os.makedirs(OUTPUT_DIR, exist_ok=True)
     index = []
 
@@ -234,55 +226,66 @@ def generate_output_tiles(tiles: dict, zoom: int) -> list[dict]:
             lat1 = lat0 + 1
             lon1 = lon0 + 1
 
-            # Build sample grid (N→S, W→E)
-            lats = np.arange(lat1, lat0, -DLAT)    # descending (N to S)
-            lons = np.arange(lon0, lon1,  DLON)    # ascending  (W to E)
+            lats = np.arange(lat1, lat0, -DLAT)   # N→S
+            lons = np.arange(lon0, lon1,  DLON)   # W→E
             rows, cols = len(lats), len(lons)
 
-            data = []
-            max_elev = 0.0
-            for lat in lats:
-                for lon in lons:
-                    e = sample_elevation(tiles, zoom, float(lat), float(lon))
-                    clamped = max(0, int(round(e)))
-                    data.append(clamped)
-                    if clamped > max_elev:
-                        max_elev = clamped
+            # Vectorised Web-Mercator → mosaic pixel coords
+            lat_g, lon_g = np.meshgrid(lats, lons, indexing="ij")
+            lat_r = np.radians(lat_g)
+            fx = (lon_g + 180.0) / 360.0 * n
+            fy = (1.0 - np.log(np.tan(lat_r) + 1.0 / np.cos(lat_r))
+                  / np.pi) / 2.0 * n
+
+            py = np.clip((fy - y_min) * 256, 0, h - 1.001)
+            px = np.clip((fx - x_min) * 256, 0, w - 1.001)
+
+            i0 = py.astype(np.int32)
+            j0 = px.astype(np.int32)
+            i1 = np.minimum(i0 + 1, h - 1)
+            j1 = np.minimum(j0 + 1, w - 1)
+            fi, fj = py - i0, px - j0
+
+            elev = (mosaic[i0, j0] * (1 - fi) * (1 - fj)
+                  + mosaic[i1, j0] * fi        * (1 - fj)
+                  + mosaic[i0, j1] * (1 - fi)  * fj
+                  + mosaic[i1, j1] * fi         * fj)
+
+            elev_int = np.maximum(0, np.round(elev)).astype(np.int32)
+            max_elev = int(elev_int.max())
 
             if max_elev < MIN_LAND_ELEVATION_M:
                 continue   # pure ocean tile — skip
 
-            # Tile name: N58E017 (SW corner)
-            lat_hem = "N" if lat0 >= 0 else "S"
-            lon_hem = "E" if lon0 >= 0 else "W"
+            lat_hem  = "N" if lat0 >= 0 else "S"
+            lon_hem  = "E" if lon0 >= 0 else "W"
             tile_name = f"{lat_hem}{abs(lat0):02d}{lon_hem}{abs(lon0):03d}"
-            out_path = os.path.join(OUTPUT_DIR, f"{tile_name}.json")
+            out_path  = os.path.join(OUTPUT_DIR, f"{tile_name}.json")
 
             tile_obj = {
-                "lat":   lat0,
-                "lon":   lon0,
-                "rows":  rows,
-                "cols":  cols,
-                "dlat":  DLAT,
-                "dlon":  DLON,
-                "max_elevation_m": int(max_elev),
-                "data":  data,
+                "lat":             lat0,
+                "lon":             lon0,
+                "rows":            rows,
+                "cols":            cols,
+                "dlat":            DLAT,
+                "dlon":            DLON,
+                "max_elevation_m": max_elev,
+                "data":            elev_int.ravel().tolist(),
             }
 
             with open(out_path, "w") as f:
-                # Compact JSON — no spaces between items
                 json.dump(tile_obj, f, separators=(",", ":"))
 
             size_kb = os.path.getsize(out_path) / 1024
             print(f"  [{processed}/{total_tiles}] {tile_name}: "
-                  f"{rows}×{cols} grid, max {int(max_elev)} m, {size_kb:.0f} KB")
+                  f"{rows}×{cols} grid, max {max_elev} m, {size_kb:.0f} KB")
 
             index.append({
-                "name":           tile_name,
-                "lat":            lat0,
-                "lon":            lon0,
-                "max_elevation_m": int(max_elev),
-                "path":           f"tiles/{tile_name}.json",
+                "name":            tile_name,
+                "lat":             lat0,
+                "lon":             lon0,
+                "max_elevation_m": max_elev,
+                "path":            f"tiles/{tile_name}.json",
             })
             saved += 1
 
@@ -304,7 +307,7 @@ def main():
 
     # Step 1: Download tiles
     print(f"\n[1/3] Downloading Terrarium tiles (zoom {ZOOM})…")
-    tiles = build_mosaic(ZOOM)
+    tiles, x_min, y_min = build_mosaic(ZOOM)
 
     if not tiles:
         print("ERROR: No tiles downloaded. Check network connectivity.")
@@ -312,7 +315,7 @@ def main():
 
     # Step 2: Generate output tiles
     print(f"\n[2/3] Sampling elevation grid at {DLAT}° resolution…")
-    index = generate_output_tiles(tiles, ZOOM)
+    index = generate_output_tiles(tiles, ZOOM, x_min, y_min)
 
     # Step 3: Write index
     print(f"\n[3/3] Writing index ({len(index)} land tiles)…")

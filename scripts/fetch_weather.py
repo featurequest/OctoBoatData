@@ -33,6 +33,7 @@ import json
 import math
 import os
 import time
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import Any
 
 import requests
@@ -55,9 +56,10 @@ LON_MIN, LON_MAX = 10.0, 25.0
 WIND_STEP  = 0.25   # degrees
 WAVE_STEP  = 0.5    # degrees
 
-BATCH_SIZE = 50     # Open-Meteo max locations per request
-RETRY_DELAY = 10
-MAX_RETRIES = 3
+BATCH_SIZE   = 50   # Open-Meteo max locations per request
+RETRY_DELAY  = 10
+MAX_RETRIES  = 5
+MAX_WORKERS  = 3    # concurrent HTTP requests (keep below Open-Meteo rate limit)
 
 # SMHI parameter codes for coastal/marine stations
 # 4  = wind speed (m/s, 10-min mean)
@@ -87,18 +89,25 @@ def build_grid(lat_min: float, lat_max: float,
 
 
 def get_json(url: str, params: dict, timeout: int = 60) -> dict | None:
-    """GET with retry."""
+    """GET with retry and 429-aware backoff."""
     for attempt in range(1, MAX_RETRIES + 1):
         try:
             r = requests.get(url, params=params, timeout=timeout,
                              headers={"User-Agent": "BoatNavApp/1.0"})
+            if r.status_code == 429:
+                wait = int(r.headers.get("Retry-After", RETRY_DELAY * attempt))
+                if attempt == MAX_RETRIES:
+                    print(f"    FAILED {url.split('?')[0]}: 429 after {MAX_RETRIES} attempts")
+                    return None
+                time.sleep(wait)
+                continue
             r.raise_for_status()
             return r.json()
         except Exception as e:
             if attempt == MAX_RETRIES:
-                print(f"    FAILED {url}: {e}")
+                print(f"    FAILED {url.split('?')[0]}: {e}")
                 return None
-            time.sleep(RETRY_DELAY)
+            time.sleep(RETRY_DELAY * attempt)  # exponential-ish backoff
     return None
 
 
@@ -119,67 +128,71 @@ WIND_VARS = [
     "temperature_2m",
 ]
 
+def _fetch_wind_batch(batch: list[tuple[float, float]]) -> list[dict]:
+    lats = [p[0] for p in batch]
+    lons = [p[1] for p in batch]
+    params = {
+        "latitude":        ",".join(map(str, lats)),
+        "longitude":       ",".join(map(str, lons)),
+        "hourly":          ",".join(WIND_VARS),
+        "wind_speed_unit": "ms",
+        "forecast_days":   7,
+        "timezone":        "UTC",
+    }
+    data = get_json(FORECAST_API, params)
+    if data is None:
+        return []
+    results = []
+    for entry, (lat, lon) in zip(data if isinstance(data, list) else [data], batch):
+        hourly = entry.get("hourly", {})
+        spd  = hourly.get("wind_speed_10m", [])
+        wdir = hourly.get("wind_direction_10m", [])
+        u_list, v_list = [], []
+        for s, d in zip(spd, wdir):
+            if s is None or d is None:
+                u_list.append(None)
+                v_list.append(None)
+            else:
+                rad = math.radians(d)
+                u_list.append(round(-s * math.sin(rad), 3))
+                v_list.append(round(-s * math.cos(rad), 3))
+        results.append({
+            "lat":   lat,
+            "lon":   lon,
+            "times": hourly.get("time", []),
+            "u10":   u_list,
+            "v10":   v_list,
+            "gusts": [round(g, 1) if g is not None else None
+                      for g in hourly.get("wind_gusts_10m", [])],
+            "temp":  [round(t, 1) if t is not None else None
+                      for t in hourly.get("temperature_2m", [])],
+        })
+    return results
+
+
 def fetch_wind_grid(grid: list[tuple[float, float]]) -> dict[str, Any]:
     """
     Fetch 7-day hourly wind + temperature for every grid point.
     Returns a dict suitable for JSON serialisation.
     """
+    batches = list(chunks(grid, BATCH_SIZE))
+    total = len(batches)
     print(f"  Fetching wind forecast for {len(grid)} grid points "
-          f"({math.ceil(len(grid) / BATCH_SIZE)} requests)…")
+          f"({total} requests, {MAX_WORKERS} workers)…")
 
     all_results: list[dict] = []
-
-    for i, batch in enumerate(chunks(grid, BATCH_SIZE)):
-        lats = [p[0] for p in batch]
-        lons = [p[1] for p in batch]
-
-        params = {
-            "latitude":         ",".join(map(str, lats)),
-            "longitude":        ",".join(map(str, lons)),
-            "hourly":           ",".join(WIND_VARS),
-            "wind_speed_unit":  "ms",
-            "forecast_days":    7,
-            "timezone":         "UTC",
-        }
-
-        data = get_json(FORECAST_API, params)
-        if data is None:
-            print(f"    Batch {i+1} failed — skipping")
-            continue
-
-        # Open-Meteo returns a list when multiple coords are given
-        entries = data if isinstance(data, list) else [data]
-
-        for entry, (lat, lon) in zip(entries, batch):
-            hourly = entry.get("hourly", {})
-            times  = hourly.get("time", [])
-            # Compute U/V wind components for correct vector interpolation
-            u_list, v_list = [], []
-            spd = hourly.get("wind_speed_10m", [])
-            wdir = hourly.get("wind_direction_10m", [])
-            for s, d in zip(spd, wdir):
-                if s is None or d is None:
-                    u_list.append(None)
-                    v_list.append(None)
-                else:
-                    rad = math.radians(d)
-                    # Meteorological convention: direction wind comes FROM
-                    u_list.append(round(-s * math.sin(rad), 3))
-                    v_list.append(round(-s * math.cos(rad), 3))
-
-            all_results.append({
-                "lat":    lat,
-                "lon":    lon,
-                "times":  times,
-                "u10":    u_list,
-                "v10":    v_list,
-                "gusts":  [round(g, 1) if g is not None else None
-                           for g in hourly.get("wind_gusts_10m", [])],
-                "temp":   [round(t, 1) if t is not None else None
-                           for t in hourly.get("temperature_2m", [])],
-            })
-
-        time.sleep(0.2)   # brief pause between batches
+    done = 0
+    with ThreadPoolExecutor(max_workers=MAX_WORKERS) as pool:
+        futures = {pool.submit(_fetch_wind_batch, b): i for i, b in enumerate(batches)}
+        for future in as_completed(futures):
+            i = futures[future]
+            result = future.result()
+            done += 1
+            if not result:
+                print(f"    [{done}/{total}] Batch {i+1} failed — skipping")
+            elif done % 10 == 0 or done == total:
+                print(f"    [{done}/{total}] {done * 100 // total}% complete")
+            all_results.extend(result)
 
     return {
         "description":   "7-day hourly wind forecast grid for Sweden",
@@ -220,60 +233,67 @@ WAVE_VARS = [
     "sea_surface_temperature",
 ]
 
+def _round1(lst: list) -> list:
+    return [round(v, 1) if v is not None else None for v in lst]
+
+
+def _fetch_wave_batch(batch: list[tuple[float, float]]) -> list[dict]:
+    lats = [p[0] for p in batch]
+    lons = [p[1] for p in batch]
+    params = {
+        "latitude":      ",".join(map(str, lats)),
+        "longitude":     ",".join(map(str, lons)),
+        "hourly":        ",".join(WAVE_VARS),
+        "forecast_days": 7,
+        "timezone":      "UTC",
+    }
+    data = get_json(MARINE_API, params)
+    if data is None:
+        return []
+    results = []
+    for entry, (lat, lon) in zip(data if isinstance(data, list) else [data], batch):
+        hourly = entry.get("hourly", {})
+        wave_h = hourly.get("wave_height", [])
+        if all(v is None for v in wave_h):
+            continue
+        results.append({
+            "lat":         lat,
+            "lon":         lon,
+            "times":       hourly.get("time", []),
+            "wave_height": _round1(wave_h),
+            "wave_dir":    _round1(hourly.get("wave_direction", [])),
+            "wave_period": _round1(hourly.get("wave_period", [])),
+            "wind_wave_h": _round1(hourly.get("wind_wave_height", [])),
+            "swell_h":     _round1(hourly.get("swell_wave_height", [])),
+            "swell_dir":   _round1(hourly.get("swell_wave_direction", [])),
+            "sst":         _round1(hourly.get("sea_surface_temperature", [])),
+        })
+    return results
+
+
 def fetch_wave_grid(grid: list[tuple[float, float]]) -> dict[str, Any]:
     """
     Fetch 7-day hourly wave data for sea grid points.
     Land points will return nulls — these are filtered out.
     """
+    batches = list(chunks(grid, BATCH_SIZE))
+    total = len(batches)
     print(f"  Fetching wave forecast for {len(grid)} grid points "
-          f"({math.ceil(len(grid) / BATCH_SIZE)} requests)…")
+          f"({total} requests, {MAX_WORKERS} workers)…")
 
     all_results: list[dict] = []
-
-    for i, batch in enumerate(chunks(grid, BATCH_SIZE)):
-        lats = [p[0] for p in batch]
-        lons = [p[1] for p in batch]
-
-        params = {
-            "latitude":      ",".join(map(str, lats)),
-            "longitude":     ",".join(map(str, lons)),
-            "hourly":        ",".join(WAVE_VARS),
-            "forecast_days": 7,
-            "timezone":      "UTC",
-        }
-
-        data = get_json(MARINE_API, params)
-        if data is None:
-            print(f"    Batch {i+1} failed — skipping")
-            continue
-
-        entries = data if isinstance(data, list) else [data]
-
-        for entry, (lat, lon) in zip(entries, batch):
-            hourly = entry.get("hourly", {})
-            wave_h = hourly.get("wave_height", [])
-
-            # Skip points that are entirely land (all None)
-            if all(v is None for v in wave_h):
-                continue
-
-            def _round1(lst):
-                return [round(v, 1) if v is not None else None for v in lst]
-
-            all_results.append({
-                "lat":           lat,
-                "lon":           lon,
-                "times":         hourly.get("time", []),
-                "wave_height":   _round1(wave_h),
-                "wave_dir":      _round1(hourly.get("wave_direction", [])),
-                "wave_period":   _round1(hourly.get("wave_period", [])),
-                "wind_wave_h":   _round1(hourly.get("wind_wave_height", [])),
-                "swell_h":       _round1(hourly.get("swell_wave_height", [])),
-                "swell_dir":     _round1(hourly.get("swell_wave_direction", [])),
-                "sst":           _round1(hourly.get("sea_surface_temperature", [])),
-            })
-
-        time.sleep(0.2)
+    done = 0
+    with ThreadPoolExecutor(max_workers=MAX_WORKERS) as pool:
+        futures = {pool.submit(_fetch_wave_batch, b): i for i, b in enumerate(batches)}
+        for future in as_completed(futures):
+            i = futures[future]
+            result = future.result()
+            done += 1
+            if result is None:
+                print(f"    [{done}/{total}] Batch {i+1} failed — skipping")
+            elif done % 5 == 0 or done == total:
+                print(f"    [{done}/{total}] {done * 100 // total}% complete")
+            all_results.extend(result or [])
 
     print(f"  {len(all_results)} sea grid points returned wave data")
 
