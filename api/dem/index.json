@@ -1,0 +1,1789 @@
+{
+  "description": "Sweden elevation tiles for wind-sheltering calculation",
+  "source": "AWS Terrain Tiles (Mapzen/Linux Foundation)",
+  "license": "Public domain",
+  "zoom_source": 9,
+  "dlat": 0.003,
+  "dlon": 0.003,
+  "bbox": {
+    "lat_min": 54.5,
+    "lat_max": 70.5,
+    "lon_min": 9.5,
+    "lon_max": 25.5
+  },
+  "usage": "Fetch tile by lat/lon floor, e.g. lat=58.7 lon=17.4 \u2192 N58E017.json. data[] is a flat row-major array (N\u2192S, W\u2192E). Index with: row = floor((lat_nw - lat) / dlat), col = floor((lon - lon0) / dlon)",
+  "generated_at": "2026-03-29T19:42:21Z",
+  "tiles": [
+    {
+      "name": "N54E009",
+      "lat": 54,
+      "lon": 9,
+      "max_elevation_m": 319,
+      "path": "tiles/N54E009.json"
+    },
+    {
+      "name": "N54E010",
+      "lat": 54,
+      "lon": 10,
+      "max_elevation_m": 145,
+      "path": "tiles/N54E010.json"
+    },
+    {
+      "name": "N54E011",
+      "lat": 54,
+      "lon": 11,
+      "max_elevation_m": 98,
+      "path": "tiles/N54E011.json"
+    },
+    {
+      "name": "N54E012",
+      "lat": 54,
+      "lon": 12,
+      "max_elevation_m": 129,
+      "path": "tiles/N54E012.json"
+    },
+    {
+      "name": "N54E013",
+      "lat": 54,
+      "lon": 13,
+      "max_elevation_m": 341,
+      "path": "tiles/N54E013.json"
+    },
+    {
+      "name": "N54E014",
+      "lat": 54,
+      "lon": 14,
+      "max_elevation_m": 5,
+      "path": "tiles/N54E014.json"
+    },
+    {
+      "name": "N54E015",
+      "lat": 54,
+      "lon": 15,
+      "max_elevation_m": 37,
+      "path": "tiles/N54E015.json"
+    },
+    {
+      "name": "N54E016",
+      "lat": 54,
+      "lon": 16,
+      "max_elevation_m": 168,
+      "path": "tiles/N54E016.json"
+    },
+    {
+      "name": "N54E017",
+      "lat": 54,
+      "lon": 17,
+      "max_elevation_m": 263,
+      "path": "tiles/N54E017.json"
+    },
+    {
+      "name": "N54E018",
+      "lat": 54,
+      "lon": 18,
+      "max_elevation_m": 306,
+      "path": "tiles/N54E018.json"
+    },
+    {
+      "name": "N54E019",
+      "lat": 54,
+      "lon": 19,
+      "max_elevation_m": 341,
+      "path": "tiles/N54E019.json"
+    },
+    {
+      "name": "N54E020",
+      "lat": 54,
+      "lon": 20,
+      "max_elevation_m": 190,
+      "path": "tiles/N54E020.json"
+    },
+    {
+      "name": "N54E021",
+      "lat": 54,
+      "lon": 21,
+      "max_elevation_m": 205,
+      "path": "tiles/N54E021.json"
+    },
+    {
+      "name": "N54E022",
+      "lat": 54,
+      "lon": 22,
+      "max_elevation_m": 283,
+      "path": "tiles/N54E022.json"
+    },
+    {
+      "name": "N54E023",
+      "lat": 54,
+      "lon": 23,
+      "max_elevation_m": 249,
+      "path": "tiles/N54E023.json"
+    },
+    {
+      "name": "N54E024",
+      "lat": 54,
+      "lon": 24,
+      "max_elevation_m": 247,
+      "path": "tiles/N54E024.json"
+    },
+    {
+      "name": "N54E025",
+      "lat": 54,
+      "lon": 25,
+      "max_elevation_m": 300,
+      "path": "tiles/N54E025.json"
+    },
+    {
+      "name": "N55E009",
+      "lat": 55,
+      "lon": 9,
+      "max_elevation_m": 161,
+      "path": "tiles/N55E009.json"
+    },
+    {
+      "name": "N55E010",
+      "lat": 55,
+      "lon": 10,
+      "max_elevation_m": 440,
+      "path": "tiles/N55E010.json"
+    },
+    {
+      "name": "N55E011",
+      "lat": 55,
+      "lon": 11,
+      "max_elevation_m": 160,
+      "path": "tiles/N55E011.json"
+    },
+    {
+      "name": "N55E012",
+      "lat": 55,
+      "lon": 12,
+      "max_elevation_m": 112,
+      "path": "tiles/N55E012.json"
+    },
+    {
+      "name": "N55E013",
+      "lat": 55,
+      "lon": 13,
+      "max_elevation_m": 204,
+      "path": "tiles/N55E013.json"
+    },
+    {
+      "name": "N55E014",
+      "lat": 55,
+      "lon": 14,
+      "max_elevation_m": 176,
+      "path": "tiles/N55E014.json"
+    },
+    {
+      "name": "N55E015",
+      "lat": 55,
+      "lon": 15,
+      "max_elevation_m": 120,
+      "path": "tiles/N55E015.json"
+    },
+    {
+      "name": "N55E020",
+      "lat": 55,
+      "lon": 20,
+      "max_elevation_m": 37,
+      "path": "tiles/N55E020.json"
+    },
+    {
+      "name": "N55E021",
+      "lat": 55,
+      "lon": 21,
+      "max_elevation_m": 175,
+      "path": "tiles/N55E021.json"
+    },
+    {
+      "name": "N55E022",
+      "lat": 55,
+      "lon": 22,
+      "max_elevation_m": 203,
+      "path": "tiles/N55E022.json"
+    },
+    {
+      "name": "N55E023",
+      "lat": 55,
+      "lon": 23,
+      "max_elevation_m": 187,
+      "path": "tiles/N55E023.json"
+    },
+    {
+      "name": "N55E024",
+      "lat": 55,
+      "lon": 24,
+      "max_elevation_m": 160,
+      "path": "tiles/N55E024.json"
+    },
+    {
+      "name": "N55E025",
+      "lat": 55,
+      "lon": 25,
+      "max_elevation_m": 233,
+      "path": "tiles/N55E025.json"
+    },
+    {
+      "name": "N56E009",
+      "lat": 56,
+      "lon": 9,
+      "max_elevation_m": 156,
+      "path": "tiles/N56E009.json"
+    },
+    {
+      "name": "N56E010",
+      "lat": 56,
+      "lon": 10,
+      "max_elevation_m": 120,
+      "path": "tiles/N56E010.json"
+    },
+    {
+      "name": "N56E011",
+      "lat": 56,
+      "lon": 11,
+      "max_elevation_m": 26,
+      "path": "tiles/N56E011.json"
+    },
+    {
+      "name": "N56E012",
+      "lat": 56,
+      "lon": 12,
+      "max_elevation_m": 205,
+      "path": "tiles/N56E012.json"
+    },
+    {
+      "name": "N56E013",
+      "lat": 56,
+      "lon": 13,
+      "max_elevation_m": 215,
+      "path": "tiles/N56E013.json"
+    },
+    {
+      "name": "N56E014",
+      "lat": 56,
+      "lon": 14,
+      "max_elevation_m": 235,
+      "path": "tiles/N56E014.json"
+    },
+    {
+      "name": "N56E015",
+      "lat": 56,
+      "lon": 15,
+      "max_elevation_m": 283,
+      "path": "tiles/N56E015.json"
+    },
+    {
+      "name": "N56E016",
+      "lat": 56,
+      "lon": 16,
+      "max_elevation_m": 101,
+      "path": "tiles/N56E016.json"
+    },
+    {
+      "name": "N56E018",
+      "lat": 56,
+      "lon": 18,
+      "max_elevation_m": 37,
+      "path": "tiles/N56E018.json"
+    },
+    {
+      "name": "N56E020",
+      "lat": 56,
+      "lon": 20,
+      "max_elevation_m": 21,
+      "path": "tiles/N56E020.json"
+    },
+    {
+      "name": "N56E021",
+      "lat": 56,
+      "lon": 21,
+      "max_elevation_m": 185,
+      "path": "tiles/N56E021.json"
+    },
+    {
+      "name": "N56E022",
+      "lat": 56,
+      "lon": 22,
+      "max_elevation_m": 189,
+      "path": "tiles/N56E022.json"
+    },
+    {
+      "name": "N56E023",
+      "lat": 56,
+      "lon": 23,
+      "max_elevation_m": 130,
+      "path": "tiles/N56E023.json"
+    },
+    {
+      "name": "N56E024",
+      "lat": 56,
+      "lon": 24,
+      "max_elevation_m": 115,
+      "path": "tiles/N56E024.json"
+    },
+    {
+      "name": "N56E025",
+      "lat": 56,
+      "lon": 25,
+      "max_elevation_m": 276,
+      "path": "tiles/N56E025.json"
+    },
+    {
+      "name": "N57E009",
+      "lat": 57,
+      "lon": 9,
+      "max_elevation_m": 72,
+      "path": "tiles/N57E009.json"
+    },
+    {
+      "name": "N57E010",
+      "lat": 57,
+      "lon": 10,
+      "max_elevation_m": 109,
+      "path": "tiles/N57E010.json"
+    },
+    {
+      "name": "N57E011",
+      "lat": 57,
+      "lon": 11,
+      "max_elevation_m": 163,
+      "path": "tiles/N57E011.json"
+    },
+    {
+      "name": "N57E012",
+      "lat": 57,
+      "lon": 12,
+      "max_elevation_m": 303,
+      "path": "tiles/N57E012.json"
+    },
+    {
+      "name": "N57E013",
+      "lat": 57,
+      "lon": 13,
+      "max_elevation_m": 359,
+      "path": "tiles/N57E013.json"
+    },
+    {
+      "name": "N57E014",
+      "lat": 57,
+      "lon": 14,
+      "max_elevation_m": 368,
+      "path": "tiles/N57E014.json"
+    },
+    {
+      "name": "N57E015",
+      "lat": 57,
+      "lon": 15,
+      "max_elevation_m": 323,
+      "path": "tiles/N57E015.json"
+    },
+    {
+      "name": "N57E016",
+      "lat": 57,
+      "lon": 16,
+      "max_elevation_m": 191,
+      "path": "tiles/N57E016.json"
+    },
+    {
+      "name": "N57E017",
+      "lat": 57,
+      "lon": 17,
+      "max_elevation_m": 38,
+      "path": "tiles/N57E017.json"
+    },
+    {
+      "name": "N57E018",
+      "lat": 57,
+      "lon": 18,
+      "max_elevation_m": 242,
+      "path": "tiles/N57E018.json"
+    },
+    {
+      "name": "N57E019",
+      "lat": 57,
+      "lon": 19,
+      "max_elevation_m": 52,
+      "path": "tiles/N57E019.json"
+    },
+    {
+      "name": "N57E021",
+      "lat": 57,
+      "lon": 21,
+      "max_elevation_m": 95,
+      "path": "tiles/N57E021.json"
+    },
+    {
+      "name": "N57E022",
+      "lat": 57,
+      "lon": 22,
+      "max_elevation_m": 169,
+      "path": "tiles/N57E022.json"
+    },
+    {
+      "name": "N57E023",
+      "lat": 57,
+      "lon": 23,
+      "max_elevation_m": 105,
+      "path": "tiles/N57E023.json"
+    },
+    {
+      "name": "N57E024",
+      "lat": 57,
+      "lon": 24,
+      "max_elevation_m": 133,
+      "path": "tiles/N57E024.json"
+    },
+    {
+      "name": "N57E025",
+      "lat": 57,
+      "lon": 25,
+      "max_elevation_m": 263,
+      "path": "tiles/N57E025.json"
+    },
+    {
+      "name": "N58E009",
+      "lat": 58,
+      "lon": 9,
+      "max_elevation_m": 290,
+      "path": "tiles/N58E009.json"
+    },
+    {
+      "name": "N58E010",
+      "lat": 58,
+      "lon": 10,
+      "max_elevation_m": 47,
+      "path": "tiles/N58E010.json"
+    },
+    {
+      "name": "N58E011",
+      "lat": 58,
+      "lon": 11,
+      "max_elevation_m": 583,
+      "path": "tiles/N58E011.json"
+    },
+    {
+      "name": "N58E012",
+      "lat": 58,
+      "lon": 12,
+      "max_elevation_m": 244,
+      "path": "tiles/N58E012.json"
+    },
+    {
+      "name": "N58E013",
+      "lat": 58,
+      "lon": 13,
+      "max_elevation_m": 337,
+      "path": "tiles/N58E013.json"
+    },
+    {
+      "name": "N58E014",
+      "lat": 58,
+      "lon": 14,
+      "max_elevation_m": 612,
+      "path": "tiles/N58E014.json"
+    },
+    {
+      "name": "N58E015",
+      "lat": 58,
+      "lon": 15,
+      "max_elevation_m": 247,
+      "path": "tiles/N58E015.json"
+    },
+    {
+      "name": "N58E016",
+      "lat": 58,
+      "lon": 16,
+      "max_elevation_m": 179,
+      "path": "tiles/N58E016.json"
+    },
+    {
+      "name": "N58E017",
+      "lat": 58,
+      "lon": 17,
+      "max_elevation_m": 182,
+      "path": "tiles/N58E017.json"
+    },
+    {
+      "name": "N58E018",
+      "lat": 58,
+      "lon": 18,
+      "max_elevation_m": 87,
+      "path": "tiles/N58E018.json"
+    },
+    {
+      "name": "N58E019",
+      "lat": 58,
+      "lon": 19,
+      "max_elevation_m": 29,
+      "path": "tiles/N58E019.json"
+    },
+    {
+      "name": "N58E021",
+      "lat": 58,
+      "lon": 21,
+      "max_elevation_m": 67,
+      "path": "tiles/N58E021.json"
+    },
+    {
+      "name": "N58E022",
+      "lat": 58,
+      "lon": 22,
+      "max_elevation_m": 64,
+      "path": "tiles/N58E022.json"
+    },
+    {
+      "name": "N58E023",
+      "lat": 58,
+      "lon": 23,
+      "max_elevation_m": 83,
+      "path": "tiles/N58E023.json"
+    },
+    {
+      "name": "N58E024",
+      "lat": 58,
+      "lon": 24,
+      "max_elevation_m": 85,
+      "path": "tiles/N58E024.json"
+    },
+    {
+      "name": "N58E025",
+      "lat": 58,
+      "lon": 25,
+      "max_elevation_m": 146,
+      "path": "tiles/N58E025.json"
+    },
+    {
+      "name": "N59E009",
+      "lat": 59,
+      "lon": 9,
+      "max_elevation_m": 1286,
+      "path": "tiles/N59E009.json"
+    },
+    {
+      "name": "N59E010",
+      "lat": 59,
+      "lon": 10,
+      "max_elevation_m": 677,
+      "path": "tiles/N59E010.json"
+    },
+    {
+      "name": "N59E011",
+      "lat": 59,
+      "lon": 11,
+      "max_elevation_m": 383,
+      "path": "tiles/N59E011.json"
+    },
+    {
+      "name": "N59E012",
+      "lat": 59,
+      "lon": 12,
+      "max_elevation_m": 392,
+      "path": "tiles/N59E012.json"
+    },
+    {
+      "name": "N59E013",
+      "lat": 59,
+      "lon": 13,
+      "max_elevation_m": 403,
+      "path": "tiles/N59E013.json"
+    },
+    {
+      "name": "N59E014",
+      "lat": 59,
+      "lon": 14,
+      "max_elevation_m": 413,
+      "path": "tiles/N59E014.json"
+    },
+    {
+      "name": "N59E015",
+      "lat": 59,
+      "lon": 15,
+      "max_elevation_m": 389,
+      "path": "tiles/N59E015.json"
+    },
+    {
+      "name": "N59E016",
+      "lat": 59,
+      "lon": 16,
+      "max_elevation_m": 169,
+      "path": "tiles/N59E016.json"
+    },
+    {
+      "name": "N59E017",
+      "lat": 59,
+      "lon": 17,
+      "max_elevation_m": 121,
+      "path": "tiles/N59E017.json"
+    },
+    {
+      "name": "N59E018",
+      "lat": 59,
+      "lon": 18,
+      "max_elevation_m": 699,
+      "path": "tiles/N59E018.json"
+    },
+    {
+      "name": "N59E019",
+      "lat": 59,
+      "lon": 19,
+      "max_elevation_m": 123,
+      "path": "tiles/N59E019.json"
+    },
+    {
+      "name": "N59E020",
+      "lat": 59,
+      "lon": 20,
+      "max_elevation_m": 179,
+      "path": "tiles/N59E020.json"
+    },
+    {
+      "name": "N59E021",
+      "lat": 59,
+      "lon": 21,
+      "max_elevation_m": 76,
+      "path": "tiles/N59E021.json"
+    },
+    {
+      "name": "N59E022",
+      "lat": 59,
+      "lon": 22,
+      "max_elevation_m": 151,
+      "path": "tiles/N59E022.json"
+    },
+    {
+      "name": "N59E023",
+      "lat": 59,
+      "lon": 23,
+      "max_elevation_m": 212,
+      "path": "tiles/N59E023.json"
+    },
+    {
+      "name": "N59E024",
+      "lat": 59,
+      "lon": 24,
+      "max_elevation_m": 91,
+      "path": "tiles/N59E024.json"
+    },
+    {
+      "name": "N59E025",
+      "lat": 59,
+      "lon": 25,
+      "max_elevation_m": 136,
+      "path": "tiles/N59E025.json"
+    },
+    {
+      "name": "N60E009",
+      "lat": 60,
+      "lon": 9,
+      "max_elevation_m": 1420,
+      "path": "tiles/N60E009.json"
+    },
+    {
+      "name": "N60E010",
+      "lat": 60,
+      "lon": 10,
+      "max_elevation_m": 977,
+      "path": "tiles/N60E010.json"
+    },
+    {
+      "name": "N60E011",
+      "lat": 60,
+      "lon": 11,
+      "max_elevation_m": 760,
+      "path": "tiles/N60E011.json"
+    },
+    {
+      "name": "N60E012",
+      "lat": 60,
+      "lon": 12,
+      "max_elevation_m": 672,
+      "path": "tiles/N60E012.json"
+    },
+    {
+      "name": "N60E013",
+      "lat": 60,
+      "lon": 13,
+      "max_elevation_m": 716,
+      "path": "tiles/N60E013.json"
+    },
+    {
+      "name": "N60E014",
+      "lat": 60,
+      "lon": 14,
+      "max_elevation_m": 571,
+      "path": "tiles/N60E014.json"
+    },
+    {
+      "name": "N60E015",
+      "lat": 60,
+      "lon": 15,
+      "max_elevation_m": 489,
+      "path": "tiles/N60E015.json"
+    },
+    {
+      "name": "N60E016",
+      "lat": 60,
+      "lon": 16,
+      "max_elevation_m": 451,
+      "path": "tiles/N60E016.json"
+    },
+    {
+      "name": "N60E017",
+      "lat": 60,
+      "lon": 17,
+      "max_elevation_m": 108,
+      "path": "tiles/N60E017.json"
+    },
+    {
+      "name": "N60E018",
+      "lat": 60,
+      "lon": 18,
+      "max_elevation_m": 65,
+      "path": "tiles/N60E018.json"
+    },
+    {
+      "name": "N60E019",
+      "lat": 60,
+      "lon": 19,
+      "max_elevation_m": 85,
+      "path": "tiles/N60E019.json"
+    },
+    {
+      "name": "N60E020",
+      "lat": 60,
+      "lon": 20,
+      "max_elevation_m": 117,
+      "path": "tiles/N60E020.json"
+    },
+    {
+      "name": "N60E021",
+      "lat": 60,
+      "lon": 21,
+      "max_elevation_m": 110,
+      "path": "tiles/N60E021.json"
+    },
+    {
+      "name": "N60E022",
+      "lat": 60,
+      "lon": 22,
+      "max_elevation_m": 128,
+      "path": "tiles/N60E022.json"
+    },
+    {
+      "name": "N60E023",
+      "lat": 60,
+      "lon": 23,
+      "max_elevation_m": 173,
+      "path": "tiles/N60E023.json"
+    },
+    {
+      "name": "N60E024",
+      "lat": 60,
+      "lon": 24,
+      "max_elevation_m": 172,
+      "path": "tiles/N60E024.json"
+    },
+    {
+      "name": "N60E025",
+      "lat": 60,
+      "lon": 25,
+      "max_elevation_m": 162,
+      "path": "tiles/N60E025.json"
+    },
+    {
+      "name": "N61E009",
+      "lat": 61,
+      "lon": 9,
+      "max_elevation_m": 2020,
+      "path": "tiles/N61E009.json"
+    },
+    {
+      "name": "N61E010",
+      "lat": 61,
+      "lon": 10,
+      "max_elevation_m": 1707,
+      "path": "tiles/N61E010.json"
+    },
+    {
+      "name": "N61E011",
+      "lat": 61,
+      "lon": 11,
+      "max_elevation_m": 1619,
+      "path": "tiles/N61E011.json"
+    },
+    {
+      "name": "N61E012",
+      "lat": 61,
+      "lon": 12,
+      "max_elevation_m": 1143,
+      "path": "tiles/N61E012.json"
+    },
+    {
+      "name": "N61E013",
+      "lat": 61,
+      "lon": 13,
+      "max_elevation_m": 1061,
+      "path": "tiles/N61E013.json"
+    },
+    {
+      "name": "N61E014",
+      "lat": 61,
+      "lon": 14,
+      "max_elevation_m": 771,
+      "path": "tiles/N61E014.json"
+    },
+    {
+      "name": "N61E015",
+      "lat": 61,
+      "lon": 15,
+      "max_elevation_m": 557,
+      "path": "tiles/N61E015.json"
+    },
+    {
+      "name": "N61E016",
+      "lat": 61,
+      "lon": 16,
+      "max_elevation_m": 490,
+      "path": "tiles/N61E016.json"
+    },
+    {
+      "name": "N61E017",
+      "lat": 61,
+      "lon": 17,
+      "max_elevation_m": 243,
+      "path": "tiles/N61E017.json"
+    },
+    {
+      "name": "N61E021",
+      "lat": 61,
+      "lon": 21,
+      "max_elevation_m": 89,
+      "path": "tiles/N61E021.json"
+    },
+    {
+      "name": "N61E022",
+      "lat": 61,
+      "lon": 22,
+      "max_elevation_m": 171,
+      "path": "tiles/N61E022.json"
+    },
+    {
+      "name": "N61E023",
+      "lat": 61,
+      "lon": 23,
+      "max_elevation_m": 204,
+      "path": "tiles/N61E023.json"
+    },
+    {
+      "name": "N61E024",
+      "lat": 61,
+      "lon": 24,
+      "max_elevation_m": 202,
+      "path": "tiles/N61E024.json"
+    },
+    {
+      "name": "N61E025",
+      "lat": 61,
+      "lon": 25,
+      "max_elevation_m": 231,
+      "path": "tiles/N61E025.json"
+    },
+    {
+      "name": "N62E009",
+      "lat": 62,
+      "lon": 9,
+      "max_elevation_m": 2136,
+      "path": "tiles/N62E009.json"
+    },
+    {
+      "name": "N62E010",
+      "lat": 62,
+      "lon": 10,
+      "max_elevation_m": 1616,
+      "path": "tiles/N62E010.json"
+    },
+    {
+      "name": "N62E011",
+      "lat": 62,
+      "lon": 11,
+      "max_elevation_m": 1539,
+      "path": "tiles/N62E011.json"
+    },
+    {
+      "name": "N62E012",
+      "lat": 62,
+      "lon": 12,
+      "max_elevation_m": 1672,
+      "path": "tiles/N62E012.json"
+    },
+    {
+      "name": "N62E013",
+      "lat": 62,
+      "lon": 13,
+      "max_elevation_m": 1458,
+      "path": "tiles/N62E013.json"
+    },
+    {
+      "name": "N62E014",
+      "lat": 62,
+      "lon": 14,
+      "max_elevation_m": 993,
+      "path": "tiles/N62E014.json"
+    },
+    {
+      "name": "N62E015",
+      "lat": 62,
+      "lon": 15,
+      "max_elevation_m": 552,
+      "path": "tiles/N62E015.json"
+    },
+    {
+      "name": "N62E016",
+      "lat": 62,
+      "lon": 16,
+      "max_elevation_m": 527,
+      "path": "tiles/N62E016.json"
+    },
+    {
+      "name": "N62E017",
+      "lat": 62,
+      "lon": 17,
+      "max_elevation_m": 453,
+      "path": "tiles/N62E017.json"
+    },
+    {
+      "name": "N62E018",
+      "lat": 62,
+      "lon": 18,
+      "max_elevation_m": 290,
+      "path": "tiles/N62E018.json"
+    },
+    {
+      "name": "N62E020",
+      "lat": 62,
+      "lon": 20,
+      "max_elevation_m": 10,
+      "path": "tiles/N62E020.json"
+    },
+    {
+      "name": "N62E021",
+      "lat": 62,
+      "lon": 21,
+      "max_elevation_m": 157,
+      "path": "tiles/N62E021.json"
+    },
+    {
+      "name": "N62E022",
+      "lat": 62,
+      "lon": 22,
+      "max_elevation_m": 219,
+      "path": "tiles/N62E022.json"
+    },
+    {
+      "name": "N62E023",
+      "lat": 62,
+      "lon": 23,
+      "max_elevation_m": 216,
+      "path": "tiles/N62E023.json"
+    },
+    {
+      "name": "N62E024",
+      "lat": 62,
+      "lon": 24,
+      "max_elevation_m": 250,
+      "path": "tiles/N62E024.json"
+    },
+    {
+      "name": "N62E025",
+      "lat": 62,
+      "lon": 25,
+      "max_elevation_m": 259,
+      "path": "tiles/N62E025.json"
+    },
+    {
+      "name": "N63E009",
+      "lat": 63,
+      "lon": 9,
+      "max_elevation_m": 1114,
+      "path": "tiles/N63E009.json"
+    },
+    {
+      "name": "N63E010",
+      "lat": 63,
+      "lon": 10,
+      "max_elevation_m": 917,
+      "path": "tiles/N63E010.json"
+    },
+    {
+      "name": "N63E011",
+      "lat": 63,
+      "lon": 11,
+      "max_elevation_m": 1387,
+      "path": "tiles/N63E011.json"
+    },
+    {
+      "name": "N63E012",
+      "lat": 63,
+      "lon": 12,
+      "max_elevation_m": 1612,
+      "path": "tiles/N63E012.json"
+    },
+    {
+      "name": "N63E013",
+      "lat": 63,
+      "lon": 13,
+      "max_elevation_m": 1449,
+      "path": "tiles/N63E013.json"
+    },
+    {
+      "name": "N63E014",
+      "lat": 63,
+      "lon": 14,
+      "max_elevation_m": 847,
+      "path": "tiles/N63E014.json"
+    },
+    {
+      "name": "N63E015",
+      "lat": 63,
+      "lon": 15,
+      "max_elevation_m": 544,
+      "path": "tiles/N63E015.json"
+    },
+    {
+      "name": "N63E016",
+      "lat": 63,
+      "lon": 16,
+      "max_elevation_m": 552,
+      "path": "tiles/N63E016.json"
+    },
+    {
+      "name": "N63E017",
+      "lat": 63,
+      "lon": 17,
+      "max_elevation_m": 589,
+      "path": "tiles/N63E017.json"
+    },
+    {
+      "name": "N63E018",
+      "lat": 63,
+      "lon": 18,
+      "max_elevation_m": 517,
+      "path": "tiles/N63E018.json"
+    },
+    {
+      "name": "N63E019",
+      "lat": 63,
+      "lon": 19,
+      "max_elevation_m": 458,
+      "path": "tiles/N63E019.json"
+    },
+    {
+      "name": "N63E020",
+      "lat": 63,
+      "lon": 20,
+      "max_elevation_m": 256,
+      "path": "tiles/N63E020.json"
+    },
+    {
+      "name": "N63E021",
+      "lat": 63,
+      "lon": 21,
+      "max_elevation_m": 32,
+      "path": "tiles/N63E021.json"
+    },
+    {
+      "name": "N63E022",
+      "lat": 63,
+      "lon": 22,
+      "max_elevation_m": 170,
+      "path": "tiles/N63E022.json"
+    },
+    {
+      "name": "N63E023",
+      "lat": 63,
+      "lon": 23,
+      "max_elevation_m": 168,
+      "path": "tiles/N63E023.json"
+    },
+    {
+      "name": "N63E024",
+      "lat": 63,
+      "lon": 24,
+      "max_elevation_m": 229,
+      "path": "tiles/N63E024.json"
+    },
+    {
+      "name": "N63E025",
+      "lat": 63,
+      "lon": 25,
+      "max_elevation_m": 216,
+      "path": "tiles/N63E025.json"
+    },
+    {
+      "name": "N64E009",
+      "lat": 64,
+      "lon": 9,
+      "max_elevation_m": 199,
+      "path": "tiles/N64E009.json"
+    },
+    {
+      "name": "N64E010",
+      "lat": 64,
+      "lon": 10,
+      "max_elevation_m": 648,
+      "path": "tiles/N64E010.json"
+    },
+    {
+      "name": "N64E011",
+      "lat": 64,
+      "lon": 11,
+      "max_elevation_m": 660,
+      "path": "tiles/N64E011.json"
+    },
+    {
+      "name": "N64E012",
+      "lat": 64,
+      "lon": 12,
+      "max_elevation_m": 1063,
+      "path": "tiles/N64E012.json"
+    },
+    {
+      "name": "N64E013",
+      "lat": 64,
+      "lon": 13,
+      "max_elevation_m": 1352,
+      "path": "tiles/N64E013.json"
+    },
+    {
+      "name": "N64E014",
+      "lat": 64,
+      "lon": 14,
+      "max_elevation_m": 1381,
+      "path": "tiles/N64E014.json"
+    },
+    {
+      "name": "N64E015",
+      "lat": 64,
+      "lon": 15,
+      "max_elevation_m": 1368,
+      "path": "tiles/N64E015.json"
+    },
+    {
+      "name": "N64E016",
+      "lat": 64,
+      "lon": 16,
+      "max_elevation_m": 755,
+      "path": "tiles/N64E016.json"
+    },
+    {
+      "name": "N64E017",
+      "lat": 64,
+      "lon": 17,
+      "max_elevation_m": 676,
+      "path": "tiles/N64E017.json"
+    },
+    {
+      "name": "N64E018",
+      "lat": 64,
+      "lon": 18,
+      "max_elevation_m": 601,
+      "path": "tiles/N64E018.json"
+    },
+    {
+      "name": "N64E019",
+      "lat": 64,
+      "lon": 19,
+      "max_elevation_m": 482,
+      "path": "tiles/N64E019.json"
+    },
+    {
+      "name": "N64E020",
+      "lat": 64,
+      "lon": 20,
+      "max_elevation_m": 378,
+      "path": "tiles/N64E020.json"
+    },
+    {
+      "name": "N64E021",
+      "lat": 64,
+      "lon": 21,
+      "max_elevation_m": 143,
+      "path": "tiles/N64E021.json"
+    },
+    {
+      "name": "N64E023",
+      "lat": 64,
+      "lon": 23,
+      "max_elevation_m": 61,
+      "path": "tiles/N64E023.json"
+    },
+    {
+      "name": "N64E024",
+      "lat": 64,
+      "lon": 24,
+      "max_elevation_m": 124,
+      "path": "tiles/N64E024.json"
+    },
+    {
+      "name": "N64E025",
+      "lat": 64,
+      "lon": 25,
+      "max_elevation_m": 167,
+      "path": "tiles/N64E025.json"
+    },
+    {
+      "name": "N65E010",
+      "lat": 65,
+      "lon": 10,
+      "max_elevation_m": 7,
+      "path": "tiles/N65E010.json"
+    },
+    {
+      "name": "N65E011",
+      "lat": 65,
+      "lon": 11,
+      "max_elevation_m": 672,
+      "path": "tiles/N65E011.json"
+    },
+    {
+      "name": "N65E012",
+      "lat": 65,
+      "lon": 12,
+      "max_elevation_m": 1113,
+      "path": "tiles/N65E012.json"
+    },
+    {
+      "name": "N65E013",
+      "lat": 65,
+      "lon": 13,
+      "max_elevation_m": 1653,
+      "path": "tiles/N65E013.json"
+    },
+    {
+      "name": "N65E014",
+      "lat": 65,
+      "lon": 14,
+      "max_elevation_m": 1738,
+      "path": "tiles/N65E014.json"
+    },
+    {
+      "name": "N65E015",
+      "lat": 65,
+      "lon": 15,
+      "max_elevation_m": 1636,
+      "path": "tiles/N65E015.json"
+    },
+    {
+      "name": "N65E016",
+      "lat": 65,
+      "lon": 16,
+      "max_elevation_m": 1218,
+      "path": "tiles/N65E016.json"
+    },
+    {
+      "name": "N65E017",
+      "lat": 65,
+      "lon": 17,
+      "max_elevation_m": 772,
+      "path": "tiles/N65E017.json"
+    },
+    {
+      "name": "N65E018",
+      "lat": 65,
+      "lon": 18,
+      "max_elevation_m": 741,
+      "path": "tiles/N65E018.json"
+    },
+    {
+      "name": "N65E019",
+      "lat": 65,
+      "lon": 19,
+      "max_elevation_m": 692,
+      "path": "tiles/N65E019.json"
+    },
+    {
+      "name": "N65E020",
+      "lat": 65,
+      "lon": 20,
+      "max_elevation_m": 587,
+      "path": "tiles/N65E020.json"
+    },
+    {
+      "name": "N65E021",
+      "lat": 65,
+      "lon": 21,
+      "max_elevation_m": 287,
+      "path": "tiles/N65E021.json"
+    },
+    {
+      "name": "N65E022",
+      "lat": 65,
+      "lon": 22,
+      "max_elevation_m": 136,
+      "path": "tiles/N65E022.json"
+    },
+    {
+      "name": "N65E023",
+      "lat": 65,
+      "lon": 23,
+      "max_elevation_m": 112,
+      "path": "tiles/N65E023.json"
+    },
+    {
+      "name": "N65E024",
+      "lat": 65,
+      "lon": 24,
+      "max_elevation_m": 143,
+      "path": "tiles/N65E024.json"
+    },
+    {
+      "name": "N65E025",
+      "lat": 65,
+      "lon": 25,
+      "max_elevation_m": 177,
+      "path": "tiles/N65E025.json"
+    },
+    {
+      "name": "N66E011",
+      "lat": 66,
+      "lon": 11,
+      "max_elevation_m": 7,
+      "path": "tiles/N66E011.json"
+    },
+    {
+      "name": "N66E012",
+      "lat": 66,
+      "lon": 12,
+      "max_elevation_m": 821,
+      "path": "tiles/N66E012.json"
+    },
+    {
+      "name": "N66E013",
+      "lat": 66,
+      "lon": 13,
+      "max_elevation_m": 1524,
+      "path": "tiles/N66E013.json"
+    },
+    {
+      "name": "N66E014",
+      "lat": 66,
+      "lon": 14,
+      "max_elevation_m": 1780,
+      "path": "tiles/N66E014.json"
+    },
+    {
+      "name": "N66E015",
+      "lat": 66,
+      "lon": 15,
+      "max_elevation_m": 1612,
+      "path": "tiles/N66E015.json"
+    },
+    {
+      "name": "N66E016",
+      "lat": 66,
+      "lon": 16,
+      "max_elevation_m": 1666,
+      "path": "tiles/N66E016.json"
+    },
+    {
+      "name": "N66E017",
+      "lat": 66,
+      "lon": 17,
+      "max_elevation_m": 1661,
+      "path": "tiles/N66E017.json"
+    },
+    {
+      "name": "N66E018",
+      "lat": 66,
+      "lon": 18,
+      "max_elevation_m": 1103,
+      "path": "tiles/N66E018.json"
+    },
+    {
+      "name": "N66E019",
+      "lat": 66,
+      "lon": 19,
+      "max_elevation_m": 703,
+      "path": "tiles/N66E019.json"
+    },
+    {
+      "name": "N66E020",
+      "lat": 66,
+      "lon": 20,
+      "max_elevation_m": 570,
+      "path": "tiles/N66E020.json"
+    },
+    {
+      "name": "N66E021",
+      "lat": 66,
+      "lon": 21,
+      "max_elevation_m": 506,
+      "path": "tiles/N66E021.json"
+    },
+    {
+      "name": "N66E022",
+      "lat": 66,
+      "lon": 22,
+      "max_elevation_m": 387,
+      "path": "tiles/N66E022.json"
+    },
+    {
+      "name": "N66E023",
+      "lat": 66,
+      "lon": 23,
+      "max_elevation_m": 385,
+      "path": "tiles/N66E023.json"
+    },
+    {
+      "name": "N66E024",
+      "lat": 66,
+      "lon": 24,
+      "max_elevation_m": 327,
+      "path": "tiles/N66E024.json"
+    },
+    {
+      "name": "N66E025",
+      "lat": 66,
+      "lon": 25,
+      "max_elevation_m": 324,
+      "path": "tiles/N66E025.json"
+    },
+    {
+      "name": "N67E011",
+      "lat": 67,
+      "lon": 11,
+      "max_elevation_m": 133,
+      "path": "tiles/N67E011.json"
+    },
+    {
+      "name": "N67E012",
+      "lat": 67,
+      "lon": 12,
+      "max_elevation_m": 814,
+      "path": "tiles/N67E012.json"
+    },
+    {
+      "name": "N67E013",
+      "lat": 67,
+      "lon": 13,
+      "max_elevation_m": 641,
+      "path": "tiles/N67E013.json"
+    },
+    {
+      "name": "N67E014",
+      "lat": 67,
+      "lon": 14,
+      "max_elevation_m": 1226,
+      "path": "tiles/N67E014.json"
+    },
+    {
+      "name": "N67E015",
+      "lat": 67,
+      "lon": 15,
+      "max_elevation_m": 1526,
+      "path": "tiles/N67E015.json"
+    },
+    {
+      "name": "N67E016",
+      "lat": 67,
+      "lon": 16,
+      "max_elevation_m": 1750,
+      "path": "tiles/N67E016.json"
+    },
+    {
+      "name": "N67E017",
+      "lat": 67,
+      "lon": 17,
+      "max_elevation_m": 1913,
+      "path": "tiles/N67E017.json"
+    },
+    {
+      "name": "N67E018",
+      "lat": 67,
+      "lon": 18,
+      "max_elevation_m": 1965,
+      "path": "tiles/N67E018.json"
+    },
+    {
+      "name": "N67E019",
+      "lat": 67,
+      "lon": 19,
+      "max_elevation_m": 1206,
+      "path": "tiles/N67E019.json"
+    },
+    {
+      "name": "N67E020",
+      "lat": 67,
+      "lon": 20,
+      "max_elevation_m": 795,
+      "path": "tiles/N67E020.json"
+    },
+    {
+      "name": "N67E021",
+      "lat": 67,
+      "lon": 21,
+      "max_elevation_m": 638,
+      "path": "tiles/N67E021.json"
+    },
+    {
+      "name": "N67E022",
+      "lat": 67,
+      "lon": 22,
+      "max_elevation_m": 534,
+      "path": "tiles/N67E022.json"
+    },
+    {
+      "name": "N67E023",
+      "lat": 67,
+      "lon": 23,
+      "max_elevation_m": 468,
+      "path": "tiles/N67E023.json"
+    },
+    {
+      "name": "N67E024",
+      "lat": 67,
+      "lon": 24,
+      "max_elevation_m": 678,
+      "path": "tiles/N67E024.json"
+    },
+    {
+      "name": "N67E025",
+      "lat": 67,
+      "lon": 25,
+      "max_elevation_m": 533,
+      "path": "tiles/N67E025.json"
+    },
+    {
+      "name": "N68E012",
+      "lat": 68,
+      "lon": 12,
+      "max_elevation_m": 563,
+      "path": "tiles/N68E012.json"
+    },
+    {
+      "name": "N68E013",
+      "lat": 68,
+      "lon": 13,
+      "max_elevation_m": 806,
+      "path": "tiles/N68E013.json"
+    },
+    {
+      "name": "N68E014",
+      "lat": 68,
+      "lon": 14,
+      "max_elevation_m": 930,
+      "path": "tiles/N68E014.json"
+    },
+    {
+      "name": "N68E015",
+      "lat": 68,
+      "lon": 15,
+      "max_elevation_m": 1081,
+      "path": "tiles/N68E015.json"
+    },
+    {
+      "name": "N68E016",
+      "lat": 68,
+      "lon": 16,
+      "max_elevation_m": 1366,
+      "path": "tiles/N68E016.json"
+    },
+    {
+      "name": "N68E017",
+      "lat": 68,
+      "lon": 17,
+      "max_elevation_m": 1717,
+      "path": "tiles/N68E017.json"
+    },
+    {
+      "name": "N68E018",
+      "lat": 68,
+      "lon": 18,
+      "max_elevation_m": 1870,
+      "path": "tiles/N68E018.json"
+    },
+    {
+      "name": "N68E019",
+      "lat": 68,
+      "lon": 19,
+      "max_elevation_m": 1633,
+      "path": "tiles/N68E019.json"
+    },
+    {
+      "name": "N68E020",
+      "lat": 68,
+      "lon": 20,
+      "max_elevation_m": 1422,
+      "path": "tiles/N68E020.json"
+    },
+    {
+      "name": "N68E021",
+      "lat": 68,
+      "lon": 21,
+      "max_elevation_m": 949,
+      "path": "tiles/N68E021.json"
+    },
+    {
+      "name": "N68E022",
+      "lat": 68,
+      "lon": 22,
+      "max_elevation_m": 662,
+      "path": "tiles/N68E022.json"
+    },
+    {
+      "name": "N68E023",
+      "lat": 68,
+      "lon": 23,
+      "max_elevation_m": 679,
+      "path": "tiles/N68E023.json"
+    },
+    {
+      "name": "N68E024",
+      "lat": 68,
+      "lon": 24,
+      "max_elevation_m": 759,
+      "path": "tiles/N68E024.json"
+    },
+    {
+      "name": "N68E025",
+      "lat": 68,
+      "lon": 25,
+      "max_elevation_m": 567,
+      "path": "tiles/N68E025.json"
+    },
+    {
+      "name": "N69E015",
+      "lat": 69,
+      "lon": 15,
+      "max_elevation_m": 525,
+      "path": "tiles/N69E015.json"
+    },
+    {
+      "name": "N69E016",
+      "lat": 69,
+      "lon": 16,
+      "max_elevation_m": 709,
+      "path": "tiles/N69E016.json"
+    },
+    {
+      "name": "N69E017",
+      "lat": 69,
+      "lon": 17,
+      "max_elevation_m": 985,
+      "path": "tiles/N69E017.json"
+    },
+    {
+      "name": "N69E018",
+      "lat": 69,
+      "lon": 18,
+      "max_elevation_m": 1216,
+      "path": "tiles/N69E018.json"
+    },
+    {
+      "name": "N69E019",
+      "lat": 69,
+      "lon": 19,
+      "max_elevation_m": 1760,
+      "path": "tiles/N69E019.json"
+    },
+    {
+      "name": "N69E020",
+      "lat": 69,
+      "lon": 20,
+      "max_elevation_m": 1514,
+      "path": "tiles/N69E020.json"
+    },
+    {
+      "name": "N69E021",
+      "lat": 69,
+      "lon": 21,
+      "max_elevation_m": 1337,
+      "path": "tiles/N69E021.json"
+    },
+    {
+      "name": "N69E022",
+      "lat": 69,
+      "lon": 22,
+      "max_elevation_m": 1089,
+      "path": "tiles/N69E022.json"
+    },
+    {
+      "name": "N69E023",
+      "lat": 69,
+      "lon": 23,
+      "max_elevation_m": 803,
+      "path": "tiles/N69E023.json"
+    },
+    {
+      "name": "N69E024",
+      "lat": 69,
+      "lon": 24,
+      "max_elevation_m": 1090,
+      "path": "tiles/N69E024.json"
+    },
+    {
+      "name": "N69E025",
+      "lat": 69,
+      "lon": 25,
+      "max_elevation_m": 998,
+      "path": "tiles/N69E025.json"
+    },
+    {
+      "name": "N70E018",
+      "lat": 70,
+      "lon": 18,
+      "max_elevation_m": 569,
+      "path": "tiles/N70E018.json"
+    },
+    {
+      "name": "N70E019",
+      "lat": 70,
+      "lon": 19,
+      "max_elevation_m": 912,
+      "path": "tiles/N70E019.json"
+    },
+    {
+      "name": "N70E020",
+      "lat": 70,
+      "lon": 20,
+      "max_elevation_m": 1073,
+      "path": "tiles/N70E020.json"
+    },
+    {
+      "name": "N70E021",
+      "lat": 70,
+      "lon": 21,
+      "max_elevation_m": 1111,
+      "path": "tiles/N70E021.json"
+    },
+    {
+      "name": "N70E022",
+      "lat": 70,
+      "lon": 22,
+      "max_elevation_m": 1192,
+      "path": "tiles/N70E022.json"
+    },
+    {
+      "name": "N70E023",
+      "lat": 70,
+      "lon": 23,
+      "max_elevation_m": 1025,
+      "path": "tiles/N70E023.json"
+    },
+    {
+      "name": "N70E024",
+      "lat": 70,
+      "lon": 24,
+      "max_elevation_m": 947,
+      "path": "tiles/N70E024.json"
+    },
+    {
+      "name": "N70E025",
+      "lat": 70,
+      "lon": 25,
+      "max_elevation_m": 828,
+      "path": "tiles/N70E025.json"
+    }
+  ]
+}
