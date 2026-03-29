@@ -1,0 +1,44 @@
+name: Update Harbor Data
+
+on:
+  schedule:
+    # Every Monday at 02:00 UTC — harbor data changes slowly
+    - cron: "0 2 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  fetch-harbors:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: scripts/requirements.txt
+
+      - name: Install dependencies
+        run: pip install -r scripts/requirements.txt
+
+      - name: Fetch harbor data
+        run: python scripts/fetch_harbors.py
+
+      - name: Commit updated harbor data
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add api/harbors.json
+          if git diff --staged --quiet; then
+            echo "No harbor changes."
+          else
+            git commit -m "chore: update harbor data $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+            git push
+          fi

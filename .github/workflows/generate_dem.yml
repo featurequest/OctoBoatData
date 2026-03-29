@@ -1,0 +1,82 @@
+name: Generate DEM Elevation Tiles
+
+# DEM data rarely changes — run weekly and allow manual trigger.
+# First run will take ~10–15 min (downloading ~300 PNG tiles).
+# Subsequent runs reuse the GitHub Actions cache for downloaded tiles.
+
+on:
+  schedule:
+    # Every Sunday at 03:00 UTC
+    - cron: "0 3 * * 0"
+  workflow_dispatch:   # Manual trigger for first-time setup
+
+permissions:
+  contents: write
+
+jobs:
+  generate-dem:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      # ---- Checkout --------------------------------------------------------
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # ---- Python ----------------------------------------------------------
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: scripts/requirements.txt
+
+      - name: Install dependencies
+        run: pip install -r scripts/requirements.txt
+
+      # ---- Cache downloaded Terrarium PNG tiles ----------------------------
+      # The key includes the week number so tiles refresh weekly.
+      # Using a weekly key avoids re-downloading ~7 MB of PNGs on every run
+      # while still refreshing the cache if the source data updates.
+      - name: Restore Terrarium tile cache
+        id: tile-cache
+        uses: actions/cache@v4
+        with:
+          path: .cache/terrarium
+          key: terrarium-z9-${{ runner.os }}-week-${{ github.run_number }}
+          restore-keys: |
+            terrarium-z9-${{ runner.os }}-
+
+      # ---- Generate DEM tiles ----------------------------------------------
+      - name: Generate elevation tiles
+        run: python scripts/generate_dem.py
+
+      # ---- Commit ----------------------------------------------------------
+      - name: Commit DEM tiles
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add api/dem/
+          if git diff --staged --quiet; then
+            echo "DEM tiles unchanged — nothing to commit."
+          else
+            TILE_COUNT=$(find api/dem/tiles -name "*.json" | wc -l)
+            git commit -m "chore: regenerate DEM tiles (${TILE_COUNT} tiles) $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+            git push
+          fi
+
+      # ---- Summary ---------------------------------------------------------
+      - name: Print summary
+        run: |
+          echo "## DEM Generation Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          TILE_COUNT=$(find api/dem/tiles -name "*.json" 2>/dev/null | wc -l)
+          TOTAL_SIZE=$(du -sh api/dem/ 2>/dev/null | cut -f1)
+          echo "- **Tiles generated:** ${TILE_COUNT}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Total size:**      ${TOTAL_SIZE}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Resolution:**      0.003° (~200 m)" >> $GITHUB_STEP_SUMMARY
+          echo "- **Source:**          AWS Terrain Tiles (Terrarium, zoom 9)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Available tiles" >> $GITHUB_STEP_SUMMARY
+          ls api/dem/tiles/*.json 2>/dev/null | xargs -I{} basename {} .json \
+            | tr '\n' ' ' >> $GITHUB_STEP_SUMMARY || echo "None" >> $GITHUB_STEP_SUMMARY
