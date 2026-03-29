@@ -1,5 +1,4 @@
 name: Update Weather Data
-
 on:
   schedule:
     # Every hour at :05 (slight offset avoids peak load on Open-Meteo)
@@ -33,8 +32,6 @@ jobs:
       # ---- Fetch wind + waves + observations --------------------------------
       - name: Fetch weather data
         run: python scripts/fetch_weather.py
-        env:
-          # No API keys required for Open-Meteo or SMHI
 
       # ---- Commit changes if any -------------------------------------------
       - name: Commit updated weather data
