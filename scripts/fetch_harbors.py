@@ -16,6 +16,7 @@ import math
 import os
 import sys
 import time
+from concurrent.futures import ThreadPoolExecutor
 
 import requests
 
@@ -30,7 +31,11 @@ except ImportError:
           "will not be reprojected. Run: pip install pyproj")
 
 OUT_PATH       = os.path.join("api", "harbors.json")
-OVERPASS_URL   = "https://overpass-api.de/api/interpreter"
+OVERPASS_URLS  = [
+    "https://overpass-api.de/api/interpreter",         # Germany
+    "https://overpass.kumi.systems/api/interpreter",   # Austria (Private.coffee)
+    "https://overpass.private.coffee/api/interpreter", # Austria (Private.coffee)
+]
 NV_WFS_URL     = "https://geodata.naturvardsverket.se/anordningar_friluftsliv/wfs"
 DEDUP_M        = 50      # metres — closer than this → same harbor
 MAX_RETRIES    = 3
@@ -144,7 +149,16 @@ def _coalesce(tags, *keys):
 
 def fetch_osm():
     print("  Querying OSM Overpass API…")
-    raw = http_post(OVERPASS_URL, {"data": OSM_QUERY})
+    last_exc = None
+    for url in OVERPASS_URLS:
+        try:
+            raw = http_post(url, {"data": OSM_QUERY})
+            break
+        except Exception as e:
+            print(f"    {url} failed: {e} — trying next endpoint")
+            last_exc = e
+    else:
+        raise last_exc
     elements = raw.get("elements", [])
     print(f"  {len(elements):,} raw OSM elements")
 
@@ -328,30 +342,43 @@ def haversine(lat1, lon1, lat2, lon2):
 def deduplicate(records, threshold_m=DEDUP_M):
     PRIORITY = {"naturvardsverket": 0, "osm": 1}
     records = sorted(records, key=lambda r: PRIORITY.get(r["source"], 9))
+
+    # Spatial grid: cell ≈ 0.001° (~111 m lat, ~55 m lon at 60°N)
+    # Checking ±1 neighbours guarantees we catch everything within threshold_m.
+    CELL = 0.001
+    grid: dict[tuple[int, int], list] = {}
     kept = []
+
     for rec in records:
         lat1, lon1 = rec.get("lat"), rec.get("lon")
         if lat1 is None:
             kept.append(rec)
             continue
+
+        ci, cj = int(lat1 / CELL), int(lon1 / CELL)
         dup = False
-        for ex in kept:
-            lat2, lon2 = ex.get("lat"), ex.get("lon")
-            if lat2 is None:
-                continue
-            if haversine(lat1, lon1, lat2, lon2) <= threshold_m:
-                # Merge missing fields
-                for section in ("services", "navigation", "access",
-                                "contact", "meta"):
-                    if section in rec and section not in ex:
-                        ex[section] = rec[section]
-                ex.setdefault("also_in", []).append(
-                    f"{rec['source']}:{rec['source_id']}"
-                )
-                dup = True
+        for di in (-1, 0, 1):
+            if dup:
                 break
+            for dj in (-1, 0, 1):
+                for ex in grid.get((ci + di, cj + dj), []):
+                    if haversine(lat1, lon1, ex["lat"], ex["lon"]) <= threshold_m:
+                        for section in ("description", "services", "navigation",
+                                        "access", "contact", "meta"):
+                            if section in rec and section not in ex:
+                                ex[section] = rec[section]
+                        ex.setdefault("also_in", []).append(
+                            f"{rec['source']}:{rec['source_id']}"
+                        )
+                        dup = True
+                        break
+                if dup:
+                    break
+
         if not dup:
             kept.append(rec)
+            grid.setdefault((ci, cj), []).append(rec)
+
     return kept
 
 
@@ -367,11 +394,12 @@ def main():
 
     os.makedirs(os.path.dirname(OUT_PATH) or ".", exist_ok=True)
 
-    print("\n[1/3] Fetching OpenStreetMap data…")
-    osm = fetch_osm()
-
-    print("\n[2/3] Fetching Naturvårdsverket data…")
-    nv = fetch_naturvardsverket()
+    print("\nFetching OSM + Naturvårdsverket in parallel…")
+    with ThreadPoolExecutor(max_workers=2) as pool:
+        f_osm = pool.submit(fetch_osm)
+        f_nv  = pool.submit(fetch_naturvardsverket)
+        osm = f_osm.result()
+        nv  = f_nv.result()
 
     all_rec = osm + nv
     print(f"\n[3/3] Deduplicating {len(all_rec):,} records "
