@@ -12,7 +12,7 @@
     "lon_max": 25.5
   },
   "usage": "Fetch tile by lat/lon floor, e.g. lat=58.7 lon=17.4 \u2192 N58E017.json. data[] is a flat row-major array (N\u2192S, W\u2192E). Index with: row = floor((lat_nw - lat) / dlat), col = floor((lon - lon0) / dlon)",
-  "generated_at": "2026-03-29T19:42:21Z",
+  "generated_at": "2026-04-05T05:05:18Z",
   "tiles": [
     {
       "name": "N54E009",
